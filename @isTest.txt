@@ -1,0 +1,14 @@
+@isTest
+public class FuelInventoryManagerTest {
+    @isTest
+    static void testUpdateFuelStock() {
+        Gas_Station__c station = new Gas_Station__c(Name = 'Test Station', Stock__c = 200);
+        insert station;
+
+        Test.startTest();
+        FuelInventoryManager.updateFuelStock(station.Id, 50);
+        Gas_Station__c updatedStation = [SELECT Stock__c FROM Gas_Station__c WHERE Id = :station.Id];
+        System.assertEquals(50, updatedStation.Stock__c);
+        Test.stopTest();
+    }
+}

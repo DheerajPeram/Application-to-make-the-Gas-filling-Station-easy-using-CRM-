@@ -1,0 +1,22 @@
+public class FuelInventoryManager {
+    // Method to update fuel stock
+    public static void updateFuelStock(Id stationId, Integer newStock) {
+        Gas_Station__c station = [SELECT Stock__c FROM Gas_Station__c WHERE Id = :stationId];
+        station.Stock__c = newStock;
+        update station;
+
+        if (newStock < 100) {
+            sendLowStockNotification(stationId);
+        }
+    }
+
+    // Method to send email notification when stock is low
+    public static void sendLowStockNotification(Id stationId) {
+        Gas_Station__c station = [SELECT Name FROM Gas_Station__c WHERE Id = :stationId];
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        mail.setToAddresses(new String[] {'manager@gasstore.com'});
+        mail.setSubject('Low Stock Alert: ' + station.Name);
+        mail.setPlainTextBody('The fuel stock for ' + station.Name + ' is below threshold.');
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+    }
+}

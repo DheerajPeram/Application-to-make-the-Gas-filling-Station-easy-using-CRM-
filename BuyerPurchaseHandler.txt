@@ -1,0 +1,15 @@
+public class BuyerPurchaseHandler {
+    // Method to handle buyer fuel purchases
+    public static void createPurchaseRecord(Id buyerId, Id fuelId, Integer quantity) {
+        Purchase__c newPurchase = new Purchase__c();
+        newPurchase.Buyer__c = buyerId;
+        newPurchase.Fuel__c = fuelId;
+        newPurchase.Quantity__c = quantity;
+        insert newPurchase;
+
+        // Update fuel stock after purchase
+        Fuel_Details__c fuel = [SELECT Stock__c FROM Fuel_Details__c WHERE Id = :fuelId];
+        fuel.Stock__c -= quantity;
+        update fuel;
+    }
+}
